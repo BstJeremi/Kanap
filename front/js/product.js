@@ -99,10 +99,7 @@ function addToCart(article) {
 
         // Fenêtre pop-up //
         const popupConfirmation =() => {
-            if(window.confirm(`Votre commande de ${choixQuantite} ${article.name} ${choixCouleur} est ajoutée au panier
-                Pour consulter votre panier, cliquez sur OK`)){
-                window.location.href ="cart.html";
-            }
+            alert("Ce produit a bien été ajouté au panier");
         }
 
         // Importation sur le local storage //
