@@ -174,3 +174,97 @@ function SuppProduct() {
 };
 
 SuppProduct();
+
+// Formulaire //
+function getForm() {
+    
+    // Ajout des Regex //
+    let form = document.querySelector(".cart__order__form");
+
+    // Création des expressions régulières //
+    let emailRegExp = new RegExp('^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}$');
+    let charRegExp = new RegExp("^[a-zA-Z ,.'-]+$");
+    let addressRegExp = new RegExp("^[0-9]{1,3}(?:(?:[,. ]){1}[-a-zA-Zàâäéèêëïîôöùûüç]+)+");
+
+    // Modification du prénom //
+    form.firstName.addEventListener('change', function() {
+        validFirstName(this);
+    });
+
+    // Modification du Nom //
+    form.lastName.addEventListener('change', function() {
+        validLastName(this);
+    });
+
+    // Modification de l'adresse //
+    form.address.addEventListener('change', function() {
+        validAddress(this);
+    });
+
+    // Modification de la Ville //
+    form.city.addEventListener('change', function() {
+        validCity(this);
+    });
+
+    // Modification du Mail //
+    form.email.addEventListener('change', function() {
+        validEmail(this);
+    });
+
+    // Validation du prénom //
+    const validFirstName = function(inputFirstName) {
+        let firstNameMsg = inputFirstName.nextElementSibling;
+
+        if (charRegExp.test(inputFirstName.value)) {
+            firstNameMsg.innerHTML = '';
+        } else {
+            firstNameMsg.innerHTML = 'Veuillez renseigner ce champ.';
+        }
+    };
+
+    // Validation du nom //
+    const validLastName = function(inputLastName) {
+        let lastNameMsg = inputLastName.nextElementSibling;
+
+        if (charRegExp.test(inputLastName.value)) {
+            lastNameMsg.innerHTML = '';
+        } else {
+            lastNameMsg.innerHTML = 'Veuillez renseigner ce champ.';
+        }
+    };
+
+    // Validation de l'adresse //
+    const validAddress = function(inputAddress) {
+        let addressMsg = inputAddress.nextElementSibling;
+
+        if (addressRegExp.test(inputAddress.value)) {
+            addressMsg.innerHTML = '';
+        } else {
+            addressMsg.innerHTML = 'Veuillez renseigner ce champ.';
+        }
+    };
+
+    // Validation de la ville //
+    const validCity = function(inputCity) {
+        let cityMsg = inputCity.nextElementSibling;
+
+        if (charRegExp.test(inputCity.value)) {
+            cityMsg.innerHTML = '';
+        } else {
+            cityMsg.innerHTML = 'Veuillez renseigner ce champ.';
+        }
+    };
+
+    // Validation du Mail //
+    const validEmail = function(inputEmail) {
+        let emailMsg = inputEmail.nextElementSibling;
+
+        if (emailRegExp.test(inputEmail.value)) {
+            emailMsg.innerHTML = '';
+        } else {
+            emailMsg.innerHTML = 'Veuillez renseigner votre email.';
+        }
+    };
+};
+
+getForm();
