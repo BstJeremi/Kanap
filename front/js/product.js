@@ -1,4 +1,4 @@
-// ETAPE 5 // Récupérer l’id du produit à afficher //
+// Récupérer l’id du produit à afficher //
 
 let str = window.location.href;
 let url = new URL(str);
@@ -10,7 +10,7 @@ let article = "";
 const color = document.querySelector("#colors");
 const quantity = document.querySelector("#quantity");
 
-// ETAPE 6 // Récupération des articles de l'api //
+// Récupération des articles de l'api //
 
 function getArticle() {
     fetch("http://localhost:3000/api/products/" + idProduct)
@@ -67,7 +67,7 @@ function getPost(article) {
 
 };
 
-// ETAPE 7 // Gestion du panier //
+// Gestion du panier //
 
 function addToCart(article) {
     const btn_envoyerPanier = document.querySelector("#addToCart");
@@ -91,15 +91,17 @@ function addToCart(article) {
             prixProduit: article.price,
             descriptionProduit: article.description,
             imgProduit: article.imageUrl,
-            altImgProduit: article.altTxt
+            altImgProduit: article.altTxt, 
         };
 
         // Initialisation du local storage //
         let produitLocalStorage = JSON.parse(localStorage.getItem("produit"));
 
         // Fenêtre pop-up //
-        const popupConfirmation =() => {
-            alert("Ce produit a bien été ajouté au panier");
+        const popupConfirmation =() =>{
+            if(window.confirm(`Votre commande de ${choixQuantite} ${article.name} ${choixCouleur} est ajoutée au panier`)){
+                window.location.href ="cart.html";
+            }
         }
 
         // Importation sur le local storage //

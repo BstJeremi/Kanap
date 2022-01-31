@@ -1,11 +1,11 @@
-// ETAPE 3 // Récupération des articles(produits) de l'api //
+// Récupération des articles(produits) de l'api //
 
 async function getArticles() {
     let articlesCatch = await fetch("http://localhost:3000/api/products")
     return await articlesCatch.json();
 }
 
-// ETAPE 4 // Répartition des données de l'api dans le DOM //
+// Répartition des données de l'api dans le DOM //
 
 async function fillSection() {
     let result = await getArticles ()
