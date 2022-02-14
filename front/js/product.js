@@ -67,7 +67,7 @@ function getPost(article) {
 
 };
 
-// Gestion du panier //
+// Gestion du panier // page panier //
 
 function addToCart(article) {
     const btn_envoyerPanier = document.querySelector("#addToCart");
@@ -87,11 +87,6 @@ function addToCart(article) {
             idProduit: idProduct,
             couleurProduit: choixCouleur,
             quantiteProduit: Number(choixQuantite),
-            nomProduit: article.name,
-            prixProduit: article.price,
-            descriptionProduit: article.description,
-            imgProduit: article.imageUrl,
-            altImgProduit: article.altTxt, 
         };
 
         // Initialisation du local storage //
@@ -103,8 +98,6 @@ function addToCart(article) {
                 window.location.href ="cart.html";
             }
         }
-
-        // Importation sur le local storage //
 
         // Si le panier comporte déjà au moins 1 article //
         if (produitLocalStorage) {
