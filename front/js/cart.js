@@ -1,7 +1,9 @@
 // Initialisation du local storage //
 let produitLocalStorage = JSON.parse(localStorage.getItem("produit"));
 const cartItemsElement = document.querySelector("#cart__items");
-let totalPanier = 0
+let cartTotal = 0
+let cartProductsCount = 0;
+const pricesMap = new Map()
 
 // Si le panier est vide //
 async function RecupCart(){
@@ -9,125 +11,131 @@ async function RecupCart(){
         const emptyCart = `<p>Votre panier est vide</p>`;
         cartItemsElement.innerHTML = emptyCart;
     } else {
-        for (let produit of produitLocalStorage){
-
+        for (let produit of produitLocalStorage) {
             const resultat = await(await fetch('http://localhost:3000/api/products/' + produit.idProduit)).json()
-            totalPanier += resultat.price * produit.quantiteProduit
+            cartTotal += resultat.price * produit.quantiteProduit
+            cartProductsCount += produit.quantiteProduit
+            pricesMap.set(produit.idProduit, resultat.price)
             cartItemsElement.insertAdjacentHTML('afterbegin', `
                 <article class="cart__item" data-id="${resultat._id}" data-color="{product-color}">
                     <div class="cart__item__img">
-                    <img src="${resultat.imageUrl}" alt="Photographie d'un canapé">
+                        <img src="${resultat.imageUrl}" alt="Photographie d'un canapé">
                     </div>
                     <div class="cart__item__content">
-                    <div class="cart__item__content__description">
-                        <h2>${resultat.name}</h2>
-                        <p>${produit.couleurProduit}</p>
-                        <p>${resultat.price} €</p>
-                    </div>
-                    <div class="cart__item__content__settings">
-                        <div class="cart__item__content__settings__quantity">
-                        <p>Qté : </p>
-                        <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${produit.quantiteProduit}">
+                        <div class="cart__item__content__description">
+                            <h2>${resultat.name}</h2>
+                            <p>${produit.couleurProduit}</p>
+                            <p>${resultat.price} €</p>
                         </div>
-                        <div class="cart__item__content__settings__delete">
-                        <p class="deleteItem" data-price="${resultat.price}">Supprimer</p>
+                        <div class="cart__item__content__settings">
+                            <div class="cart__item__content__settings__quantity">
+                                <p>Qté : </p>
+                                <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${produit.quantiteProduit}">
+                            </div>
+                            <div class="cart__item__content__settings__delete">
+                                <p class="deleteItem">Supprimer</p>
+                            </div>
                         </div>
-                    </div>
                     </div>
                 </article>
             `)
-
-        
+       
         }
+        displayTotals()
     }
 };
+
+
+cartItemsElement.addEventListener('click', function(event) {
+
+    if (event.target.className.indexOf('itemQuantity') >= 0) {
+        const articleElement = event.target.parentNode.parentNode.parentNode.parentNode
+        const productId = articleElement.getAttribute('data-id')
+        const productIndex = produitLocalStorage.findIndex(el => el.idProduit == productId)
+        const ProductOldQuantity = produitLocalStorage[productIndex].quantiteProduit === cartProductsCount
+        alert (ProductOldQuantity)
+        cartProductsCount += 1
+        cartTotal += pricesMap.get(productId)
+        displayTotals()
+    }
+
+    else if (event.target.className.indexOf('deleteItem') >= 0) {
+        const articleElement = event.target.parentNode.parentNode.parentNode.parentNode
+        const productId = articleElement.getAttribute('data-id')
+        articleElement.remove()
+        const productIndex = produitLocalStorage.findIndex(el => el.idProduit == productId);
+        cartProductsCount -= produitLocalStorage[productIndex].quantiteProduit
+        cartTotal -= produitLocalStorage[productIndex].quantiteProduit * pricesMap.get(productId)
+        produitLocalStorage.splice(productIndex, 1)
+        localStorage.setItem('produit', JSON.stringify(produitLocalStorage))
+        displayTotals()
+    }
+})
 
 RecupCart();
 
-function RecupTotals(){
-
-    // Récupération du total des quantités //
-    let elemsQtt = document.getElementsByClassName('itemQuantity');
-    let myLength = elemsQtt.length;
-    let totalQtt = 0;
-
-    let totalPrice = 0;
-    console.log(elemsQtt)
-    for (let i = 0; i < myLength; ++i) {
-        totalQtt += elemsQtt[i].valueAsNumber;
-        totalPrice += (elemsQtt[i].valueAsNumber * elemsQtt[i].getAttribute("data-price"));
-    };
-    // alert(totalPrice)
-    // alert(totalQtt)
-
-    let productTotalQuantity = document.getElementById('totalQuantity');
-    productTotalQuantity.innerHTML = totalQtt;
-    console.log(totalQtt);
-
-    // Récupération du prix total //
-
-    let productTotalPrice = document.getElementById('totalPrice');
-    productTotalPrice.innerHTML = totalPrice;
-    console.log(totalPrice);
+function displayTotals () {
+    document.getElementById('totalPrice').innerText = cartTotal;
+    document.getElementById('totalQuantity').innerText = cartProductsCount;
 };
 
-RecupTotals();
 
 // Modification d'une quantité de produit //
-function modifyQtt() {
-    let qttModif = document.querySelectorAll(".itemQuantity");
+// function modifyQtt() {
+    //let qttModif = document.querySelectorAll(".itemQuantity");
 
-    for (let k = 0; k < qttModif.length; k++){
-        qttModif[k].addEventListener("change" , (event) => {
-            event.preventDefault();
+     //for (let k = 0; k < qttModif.length; k++){
+        //qttModif[k].addEventListener("change" , (event) => {
+            //event.preventDefault();
 
             // Selection de l'element à modifier en fonction de son id ET sa couleur //
-            let quantityModif = produitLocalStorage[k].quantiteProduit;
-            let qttModifValue = qttModif[k].valueAsNumber;
+            //let quantityModif = produitLocalStorage[k].quantiteProduit;
+            //let qttModifValue = qttModif[k].valueAsNumber;
+           
+            //const resultFind = produitLocalStorage.find((el) => el.qttModifValue !== quantityModif);
+
+            //resultFind.quantiteProduit = qttModifValue;
+            //produitLocalStorage[k].quantiteProduit = resultFind.quantiteProduit;
+
+            //localStorage.setItem("produit", JSON.stringify(produitLocalStorage));
+           
+            //console.log(event.target);
+            //RecupTotals();
             
-            const resultFind = produitLocalStorage.find((el) => el.qttModifValue !== quantityModif);
+        //})
+    //}
+//} 
 
-            resultFind.quantiteProduit = qttModifValue;
-            produitLocalStorage[k].quantiteProduit = resultFind.quantiteProduit;
-
-            localStorage.setItem("produit", JSON.stringify(produitLocalStorage));
-            
-            console.log(event.target);
-            RecupTotals();
-        })
-    }
-}
-
-modifyQtt();
+//modifyQtt();
 
 // Suppression d'un produit //
-function SuppProduct() {
-    let btn_supprimer = document.querySelectorAll(".deleteItem");
+//function SuppProduct() {
+    //let btn_supprimer = document.querySelectorAll(".deleteItem");
 
-    for (let b = 0; b < btn_supprimer.length; b++){
-        btn_supprimer[b].addEventListener("click" , (event) => {
-            event.preventDefault();
+    //for (let b = 0; b < btn_supprimer.length; b++){
+        //btn_supprimer[b].addEventListener("click" , (event) => {
+            //event.preventDefault();
 
             // Selection de l'element à supprimer en fonction de son id ET sa couleur //
-            let idSupp = produitLocalStorage[b].idProduit;
-            let colorSupp = produitLocalStorage[b].couleurProduit;
+            //let idSupp = produitLocalStorage[b].idProduit;
+            //let colorSupp = produitLocalStorage[b].couleurProduit;
 
-            produitLocalStorage = produitLocalStorage.filter( el => el.idProduit !== idSupp || el.couleurProduit !== colorSupp );
-            
-            localStorage.setItem("produit", JSON.stringify(produitLocalStorage));
-            console.log(localStorage.getItem("produit"))
+            //produitLocalStorage = produitLocalStorage.filter( el => el.idProduit !== idSupp || el.couleurProduit !== colorSupp );
+           
+            //localStorage.setItem("produit", JSON.stringify(produitLocalStorage));
+            //console.log(localStorage.getItem("produit"))
 
-            event.target.parentNode.parentNode.parentNode.parentNode.remove()
-            RecupTotals();
-        })
-    };
-};
+            //event.target.parentNode.parentNode.parentNode.parentNode.remove()
+            //RecupTotals();
+        //})
+    //};
+//};
 
-SuppProduct();
+//SuppProduct();
 
 // Formulaire //
 function getForm() {
-    
+   
     // Ajout des Regex //
     let form = document.querySelector(".cart__order__form");
 
@@ -225,7 +233,7 @@ function postForm(){
 
     //Ecouter le panier
     btn_commander.addEventListener("click", (event)=>{
-    
+   
         //Récupération des coordonnées du formulaire client
         let inputName = document.getElementById('firstName');
         let inputLastName = document.getElementById('lastName');
@@ -249,14 +257,14 @@ function postForm(){
                 email: inputMail.value,
             },
             products: idProducts,
-        } 
+        }
 
         const options = {
             method: 'POST',
             body: JSON.stringify(order),
             headers: {
-                'Accept': 'application/json', 
-                "Content-Type": "application/json" 
+                'Accept': 'application/json',
+                "Content-Type": "application/json"
             },
         };
 
