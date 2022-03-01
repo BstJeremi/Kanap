@@ -52,10 +52,15 @@ cartItemsElement.addEventListener('click', function(event) {
         const articleElement = event.target.parentNode.parentNode.parentNode.parentNode
         const productId = articleElement.getAttribute('data-id')
         const productIndex = produitLocalStorage.findIndex(el => el.idProduit == productId)
-        const ProductOldQuantity = produitLocalStorage[productIndex].quantiteProduit === cartProductsCount
-        alert (ProductOldQuantity)
-        cartProductsCount += 1
-        cartTotal += pricesMap.get(productId)
+        const productOldQuantity = produitLocalStorage[productIndex].quantiteProduit 
+        if (productOldQuantity > event.target.value) {
+            cartProductsCount += 1
+            cartTotal += pricesMap.get(productId)
+        } else {
+            cartProductsCount -= 1
+            cartTotal -= pricesMap.get(productId)
+        }
+        localStorage.setItem('produit', JSON.stringify(produitLocalStorage))
         displayTotals()
     }
 
@@ -82,56 +87,56 @@ function displayTotals () {
 
 // Modification d'une quantité de produit //
 // function modifyQtt() {
-    //let qttModif = document.querySelectorAll(".itemQuantity");
+    // let qttModif = document.querySelectorAll(".itemQuantity");
 
-     //for (let k = 0; k < qttModif.length; k++){
-        //qttModif[k].addEventListener("change" , (event) => {
-            //event.preventDefault();
+     // for (let k = 0; k < qttModif.length; k++){
+        // qttModif[k].addEventListener("change" , (event) => {
+            // event.preventDefault();
 
             // Selection de l'element à modifier en fonction de son id ET sa couleur //
-            //let quantityModif = produitLocalStorage[k].quantiteProduit;
-            //let qttModifValue = qttModif[k].valueAsNumber;
+            // let quantityModif = produitLocalStorage[k].quantiteProduit;
+            // let qttModifValue = qttModif[k].valueAsNumber;
            
-            //const resultFind = produitLocalStorage.find((el) => el.qttModifValue !== quantityModif);
+            // const resultFind = produitLocalStorage.find((el) => el.qttModifValue !== quantityModif);
 
-            //resultFind.quantiteProduit = qttModifValue;
-            //produitLocalStorage[k].quantiteProduit = resultFind.quantiteProduit;
+            // resultFind.quantiteProduit = qttModifValue;
+            // produitLocalStorage[k].quantiteProduit = resultFind.quantiteProduit;
 
-            //localStorage.setItem("produit", JSON.stringify(produitLocalStorage));
+            // localStorage.setItem("produit", JSON.stringify(produitLocalStorage));
            
-            //console.log(event.target);
-            //RecupTotals();
+            // console.log(event.target);
+            // RecupTotals();
             
-        //})
-    //}
-//} 
+        // })
+    // }
+// } 
 
-//modifyQtt();
+// modifyQtt();
 
 // Suppression d'un produit //
-//function SuppProduct() {
-    //let btn_supprimer = document.querySelectorAll(".deleteItem");
+// function SuppProduct() {
+    // let btn_supprimer = document.querySelectorAll(".deleteItem");
 
-    //for (let b = 0; b < btn_supprimer.length; b++){
-        //btn_supprimer[b].addEventListener("click" , (event) => {
-            //event.preventDefault();
+    // for (let b = 0; b < btn_supprimer.length; b++){
+        // btn_supprimer[b].addEventListener("click" , (event) => {
+            // event.preventDefault();
 
             // Selection de l'element à supprimer en fonction de son id ET sa couleur //
-            //let idSupp = produitLocalStorage[b].idProduit;
-            //let colorSupp = produitLocalStorage[b].couleurProduit;
+            // let idSupp = produitLocalStorage[b].idProduit;
+            // let colorSupp = produitLocalStorage[b].couleurProduit;
 
-            //produitLocalStorage = produitLocalStorage.filter( el => el.idProduit !== idSupp || el.couleurProduit !== colorSupp );
+            // produitLocalStorage = produitLocalStorage.filter( el => el.idProduit !== idSupp || el.couleurProduit !== colorSupp );
            
-            //localStorage.setItem("produit", JSON.stringify(produitLocalStorage));
-            //console.log(localStorage.getItem("produit"))
+            // localStorage.setItem("produit", JSON.stringify(produitLocalStorage));
+            // console.log(localStorage.getItem("produit"))
 
-            //event.target.parentNode.parentNode.parentNode.parentNode.remove()
-            //RecupTotals();
-        //})
-    //};
-//};
+            // event.target.parentNode.parentNode.parentNode.parentNode.remove()
+            // RecupTotals();
+        // })
+    // };
+// };
 
-//SuppProduct();
+// SuppProduct();
 
 // Formulaire //
 function getForm() {
