@@ -45,7 +45,7 @@ async function RecupCart(){
     }
 };
 
-
+// Modification et Suppression de quantités dans le panier //
 cartItemsElement.addEventListener('click', function(event) {
     
     if (event.target.className.indexOf('itemQuantity') >= 0) {
@@ -89,60 +89,6 @@ function displayTotals () {
     document.getElementById('totalPrice').innerText = cartTotal;
     document.getElementById('totalQuantity').innerText = cartProductsCount;
 };
-
-
-// Modification d'une quantité de produit //
-// function modifyQtt() {
-    // let qttModif = document.querySelectorAll(".itemQuantity");
-
-     // for (let k = 0; k < qttModif.length; k++){
-        // qttModif[k].addEventListener("change" , (event) => {
-            // event.preventDefault();
-
-            // Selection de l'element à modifier en fonction de son id ET sa couleur //
-            // let quantityModif = produitLocalStorage[k].quantiteProduit;
-            // let qttModifValue = qttModif[k].valueAsNumber;
-           
-            // const resultFind = produitLocalStorage.find((el) => el.qttModifValue !== quantityModif);
-
-            // resultFind.quantiteProduit = qttModifValue;
-            // produitLocalStorage[k].quantiteProduit = resultFind.quantiteProduit;
-
-            // localStorage.setItem("produit", JSON.stringify(produitLocalStorage));
-           
-            // console.log(event.target);
-            // RecupTotals();
-            
-        // })
-    // }
-// } 
-
-// modifyQtt();
-
-// Suppression d'un produit //
-// function SuppProduct() {
-    // let btn_supprimer = document.querySelectorAll(".deleteItem");
-
-    // for (let b = 0; b < btn_supprimer.length; b++){
-        // btn_supprimer[b].addEventListener("click" , (event) => {
-            // event.preventDefault();
-
-            // Selection de l'element à supprimer en fonction de son id ET sa couleur //
-            // let idSupp = produitLocalStorage[b].idProduit;
-            // let colorSupp = produitLocalStorage[b].couleurProduit;
-
-            // produitLocalStorage = produitLocalStorage.filter( el => el.idProduit !== idSupp || el.couleurProduit !== colorSupp );
-           
-            // localStorage.setItem("produit", JSON.stringify(produitLocalStorage));
-            // console.log(localStorage.getItem("produit"))
-
-            // event.target.parentNode.parentNode.parentNode.parentNode.remove()
-            // RecupTotals();
-        // })
-    // };
-// };
-
-// SuppProduct();
 
 // Formulaire //
 function getForm() {
@@ -238,26 +184,25 @@ function getForm() {
 
 getForm();
 
-//Envoi des informations client au localstorage
+// Envoi des informations client au localstorage //
 function postForm(){
     const btn_commander = document.getElementById("order");
 
-    //Ecouter le panier
+    // Ecouter le panier //
     btn_commander.addEventListener("click", (event)=>{
    
-        //Récupération des coordonnées du formulaire client
+        // Récupération des coordonnées du formulaire client //
         let inputName = document.getElementById('firstName');
         let inputLastName = document.getElementById('lastName');
         let inputAdress = document.getElementById('address');
         let inputCity = document.getElementById('city');
         let inputMail = document.getElementById('email');
 
-        //Construction d'un array depuis le local storage
+        // Construction d'un array depuis le local storage //
         let idProducts = [];
         for (let i = 0; i<produitLocalStorage.length;i++) {
             idProducts.push(produitLocalStorage[i].idProduit);
         }
-        console.log(idProducts);
 
         const order = {
             contact : {
@@ -293,4 +238,5 @@ function postForm(){
         });
     })
 }
+
 postForm();
