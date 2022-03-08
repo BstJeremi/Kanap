@@ -45,27 +45,21 @@ async function RecupCart(){
     }
 };
 
-// Modification et Suppression de quantités dans le panier //
+
 cartItemsElement.addEventListener('click', function(event) {
-    
+
     if (event.target.className.indexOf('itemQuantity') >= 0) {
-        const productNewQuantity = parseInt(event.target.value)
         const articleElement = event.target.parentNode.parentNode.parentNode.parentNode
         const productId = articleElement.getAttribute('data-id')
         const productIndex = produitLocalStorage.findIndex(el => el.idProduit == productId)
         const productOldQuantity = produitLocalStorage[productIndex].quantiteProduit 
-
-        if (productNewQuantity === productOldQuantity) return;
-
-        if (productOldQuantity > productNewQuantity) {
-            cartProductsCount -= 1
-            cartTotal -= pricesMap.get(productId)
-        } else {
+        if (productOldQuantity > event.target.value) {
             cartProductsCount += 1
             cartTotal += pricesMap.get(productId)
+        } else if (productOldQuantity < event.target.value) {
+            cartProductsCount -= 1
+            cartTotal -= pricesMap.get(productId)
         }
-        produitLocalStorage[productIndex].quantiteProduit = productNewQuantity
-    
         localStorage.setItem('produit', JSON.stringify(produitLocalStorage))
         displayTotals()
     }
@@ -95,11 +89,6 @@ function getForm() {
    
     // Ajout des Regex //
     let form = document.querySelector(".cart__order__form");
-
-    // Création des expressions régulières //
-    let emailRegExp = new RegExp('^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}$');
-    let charRegExp = new RegExp("^[a-zA-Z ,.'-]+$");
-    let addressRegExp = new RegExp("^[0-9]{1,3}(?:(?:[,. ]){1}[-a-zA-Zàâäéèêëïîôöùûüç]+)+");
 
     // Modification du prénom //
     form.firstName.addEventListener('change', function() {
@@ -184,59 +173,50 @@ function getForm() {
 
 getForm();
 
-// Envoi des informations client au localstorage //
-function postForm(){
-    const btn_commander = document.getElementById("order");
-
-    // Ecouter le panier //
-    btn_commander.addEventListener("click", (event)=>{
+function postForm(e) {
+    e.preventDefault();
    
-        // Récupération des coordonnées du formulaire client //
-        let inputName = document.getElementById('firstName');
-        let inputLastName = document.getElementById('lastName');
-        let inputAdress = document.getElementById('address');
-        let inputCity = document.getElementById('city');
-        let inputMail = document.getElementById('email');
+    // Récupération des coordonnées du formulaire client //
+    let inputName = document.getElementById('firstName');
+    let inputLastName = document.getElementById('lastName');
+    let inputAdress = document.getElementById('address');
+    let inputCity = document.getElementById('city');
+    let inputMail = document.getElementById('email');
 
-        // Construction d'un array depuis le local storage //
-        let idProducts = [];
-        for (let i = 0; i<produitLocalStorage.length;i++) {
-            idProducts.push(produitLocalStorage[i].idProduit);
-        }
+    // Construction d'un array depuis le local storage //
+    let idProducts = [];
+    for (let i = 0; i<produitLocalStorage.length;i++) {
+        idProducts.push(produitLocalStorage[i].idProduit);
+    }
 
-        const order = {
-            contact : {
-                firstName: inputName.value,
-                lastName: inputLastName.value,
-                address: inputAdress.value,
-                city: inputCity.value,
-                email: inputMail.value,
-            },
-            products: idProducts,
-        }
+    const order = {
+        contact : {
+            firstName: inputName.value,
+            lastName: inputLastName.value,
+            address: inputAdress.value,
+            city: inputCity.value,
+            email: inputMail.value,
+        },
+        products: idProducts,
+    }
 
-        const options = {
-            method: 'POST',
-            body: JSON.stringify(order),
-            headers: {
-                'Accept': 'application/json',
-                "Content-Type": "application/json"
-            },
-        };
+    const options = {
+        method: 'POST',
+        body: JSON.stringify(order),
+        headers: {
+            'Accept': 'application/json',
+            "Content-Type": "application/json"
+        },
+    };
 
-        fetch("http://localhost:3000/api/products/order", options)
-        .then((response) => response.json())
-        .then((data) => {
-            console.log(data);
-            localStorage.clear();
-            localStorage.setItem("orderId", data.orderId);
-
-            document.location.href = "confirmation.html";
-        })
-        .catch((err) => {
-            alert ("Problème avec fetch : " + err.message);
-        });
+    fetch("http://localhost:3000/api/products/order", options)
+    .then((response) => response.json())
+    .then((data) => {
+        localStorage.clear();
+        localStorage.setItem("orderId", data.orderId);
+        document.location.href = "confirmation.html";
     })
+    .catch((err) => {
+        alert ("Problème avec fetch : " + err.message);
+    });
 }
-
-postForm();
