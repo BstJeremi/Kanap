@@ -49,17 +49,23 @@ async function RecupCart(){
 cartItemsElement.addEventListener('click', function(event) {
 
     if (event.target.className.indexOf('itemQuantity') >= 0) {
+        const productNewQuantity = parseInt(event.target.value)
         const articleElement = event.target.parentNode.parentNode.parentNode.parentNode
         const productId = articleElement.getAttribute('data-id')
         const productIndex = produitLocalStorage.findIndex(el => el.idProduit == productId)
         const productOldQuantity = produitLocalStorage[productIndex].quantiteProduit 
+
+        if (productNewQuantity === productOldQuantity) return;
+
         if (productOldQuantity > event.target.value) {
-            cartProductsCount += 1
-            cartTotal += pricesMap.get(productId)
-        } else if (productOldQuantity < event.target.value) {
             cartProductsCount -= 1
             cartTotal -= pricesMap.get(productId)
+        } else if (productOldQuantity < event.target.value) {
+            cartProductsCount += 1
+            cartTotal += pricesMap.get(productId)
         }
+        produitLocalStorage[productIndex].quantiteProduit = productNewQuantity
+        
         localStorage.setItem('produit', JSON.stringify(produitLocalStorage))
         displayTotals()
     }
