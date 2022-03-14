@@ -6,7 +6,7 @@ let cartProductsCount = 0;
 const pricesMap = new Map()
 
 // Si le panier est vide //
-async function RecupCart(){
+async function getCart(){
     if (produitLocalStorage === null || produitLocalStorage == 0) {
         const emptyCart = `<p>Votre panier est vide</p>`;
         cartItemsElement.innerHTML = emptyCart;
@@ -45,6 +45,7 @@ async function RecupCart(){
     }
 };
 
+// Page panier //
 
 cartItemsElement.addEventListener('click', function(event) {
 
@@ -83,7 +84,7 @@ cartItemsElement.addEventListener('click', function(event) {
     }
 })
 
-RecupCart();
+getCart();
 
 function displayTotals () {
     document.getElementById('totalPrice').innerText = cartTotal;
@@ -92,9 +93,6 @@ function displayTotals () {
 
 // Formulaire //
 function getForm() {
-   
-    // Ajout des Regex //
-    let form = document.querySelector(".cart__order__form");
 
     // Modification du prénom //
     form.firstName.addEventListener('change', function() {
@@ -179,6 +177,7 @@ function getForm() {
 
 getForm();
 
+// FORMULAIRE //
 function postForm(e) {
     e.preventDefault();
    
